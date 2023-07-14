@@ -12,31 +12,25 @@ RUN echo "I'm building for $TARGETPLATFORM"
 RUN apt-get update && apt-get -y install \
     libusb-1.0 wget libavahi-compat-libdnssd-dev curl
 
-# 安装libssl 1.1
-RUN cd /tmp \
-    && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
-    && dpkg -i ./libssl1.1_1.1.0g-2ubuntu4_amd64.deb
-
-RUN cd /tmp \
-    && wget https://github.com/bitxeno/usbmuxd2/releases/download/v0.0.1/usbmuxd2-ubuntu-x86_64.tar.gz \
-    && tar zxf usbmuxd2-ubuntu-x86_64.tar.gz \
-    && dpkg -i ./libgeneral_1.0.0-1_amd64.deb \
-    && dpkg -i ./libplist_2.3.0-1_amd64.deb \
-    && dpkg -i ./libimobiledevice-glue_1.0.0-1_amd64.deb \
-    && dpkg -i ./libusbmuxd_2.3.0-1_amd64.deb \
-    && dpkg -i ./libimobiledevice_1.3.1-1_amd64.deb \
-    && dpkg -i ./usbmuxd2_1.0.0-1_amd64.deb
+RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
+    && cd /tmp \
+    && wget https://github.com/bitxeno/usbmuxd2/releases/download/v0.0.2/usbmuxd2-ubuntu-${PKG_ARCH}.tar.gz \
+    && tar zxf usbmuxd2-ubuntu-${PKG_ARCH}.tar.gz \
+    && dpkg -i ./libgeneral_1.0.0-1_${PKG_ARCH}.deb \
+    && dpkg -i ./libplist_2.3.0-1_${PKG_ARCH}.deb \
+    && dpkg -i ./libimobiledevice-glue_1.0.0-1_${PKG_ARCH}.deb \
+    && dpkg -i ./libusbmuxd_2.3.0-1_${PKG_ARCH}.deb \
+    && dpkg -i ./libimobiledevice_1.3.1-1_${PKG_ARCH}.deb \
+    && dpkg -i ./usbmuxd2_1.0.0-1_${PKG_ARCH}.deb \
 
 # 安装anisette-server，用于模拟本机为MacBook
-RUN cd /tmp \
-    && wget https://github.com/Dadoum/Provision/releases/download/2.1.0/anisette-server-x86_64 \
-    && mv anisette-server-x86_64 /usr/bin/anisette-server \
-    && chmod +x /usr/bin/anisette-server
+    && wget https://github.com/Dadoum/Provision/releases/download/2.1.0/anisette-server-${PKG_ARCH} \
+    && mv anisette-server-${PKG_ARCH} /usr/bin/anisette-server \
+    && chmod +x /usr/bin/anisette-server \
 
 # 安装AltStore
-RUN cd /tmp \
-    && wget https://github.com/NyaMisty/AltServer-Linux/releases/download/v0.0.5/AltServer-x86_64 \
-    && mv AltServer-x86_64 /usr/bin/AltServer \
+    && wget https://github.com/NyaMisty/AltServer-Linux/releases/download/v0.0.5/AltServer-${PKG_ARCH} \
+    && mv AltServer-${PKG_ARCH} /usr/bin/AltServer \
     && chmod +x /usr/bin/AltServer
 
 # 安装tzdata支持更新时区
