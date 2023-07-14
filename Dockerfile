@@ -21,14 +21,18 @@ RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aa
     && dpkg -i ./libimobiledevice-glue_1.0.0-1_${PKG_ARCH}.deb \
     && dpkg -i ./libusbmuxd_2.3.0-1_${PKG_ARCH}.deb \
     && dpkg -i ./libimobiledevice_1.3.1-1_${PKG_ARCH}.deb \
-    && dpkg -i ./usbmuxd2_1.0.0-1_${PKG_ARCH}.deb \
+    && dpkg -i ./usbmuxd2_1.0.0-1_${PKG_ARCH}.deb
 
 # 安装anisette-server，用于模拟本机为MacBook
+RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
+    && cd /tmp \
     && wget https://github.com/Dadoum/Provision/releases/download/2.1.0/anisette-server-${PKG_ARCH} \
     && mv anisette-server-${PKG_ARCH} /usr/bin/anisette-server \
     && chmod +x /usr/bin/anisette-server \
 
 # 安装AltStore
+RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
+    && cd /tmp \
     && wget https://github.com/NyaMisty/AltServer-Linux/releases/download/v0.0.5/AltServer-${PKG_ARCH} \
     && mv AltServer-${PKG_ARCH} /usr/bin/AltServer \
     && chmod +x /usr/bin/AltServer
