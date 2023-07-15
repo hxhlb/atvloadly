@@ -1,4 +1,14 @@
-FROM ubuntu:22.04
+ARG PKG_ARCH
+
+FROM ubuntu:22.04 AS base
+
+FROM base AS aarch64-base
+ENV PKG_ARCH=aarch64
+
+FROM base AS x86_64-base
+ENV PKG_ARCH=x86_64
+
+FROM ${PKG_ARCH}-base AS final
 ARG APP_NAME
 ARG VERSION
 ARG BUILDDATE
@@ -12,8 +22,7 @@ RUN echo "I'm building for $TARGETPLATFORM"
 RUN apt-get update && apt-get -y install \
     wget libavahi-compat-libdnssd-dev curl
 
-RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
-    && cd /tmp \
+RUN cd /tmp \
     && wget https://github.com/bitxeno/usbmuxd2/releases/download/v0.0.2/usbmuxd2-ubuntu-${PKG_ARCH}.tar.gz \
     && tar zxf usbmuxd2-ubuntu-${PKG_ARCH}.tar.gz \
     && dpkg -i --force-architecture ./libusb_1.0.26-1_${PKG_ARCH}.deb \
@@ -25,15 +34,13 @@ RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aa
     && dpkg -i --force-architecture ./usbmuxd2_1.0.0-1_${PKG_ARCH}.deb
 
 # 安装anisette-server，用于模拟本机为MacBook
-RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
-    && cd /tmp \
+RUN cd /tmp \
     && wget https://github.com/Dadoum/Provision/releases/download/2.1.0/anisette-server-${PKG_ARCH} \
     && mv anisette-server-${PKG_ARCH} /usr/bin/anisette-server \
     && chmod +x /usr/bin/anisette-server \
 
 # 安装AltStore
-RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
-    && cd /tmp \
+RUN cd /tmp \
     && wget https://github.com/NyaMisty/AltServer-Linux/releases/download/v0.0.5/AltServer-${PKG_ARCH} \
     && mv AltServer-${PKG_ARCH} /usr/bin/AltServer \
     && chmod +x /usr/bin/AltServer
