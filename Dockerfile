@@ -10,18 +10,19 @@ RUN echo "I'm building for $TARGETPLATFORM"
 
 # 安装依赖
 RUN apt-get update && apt-get -y install \
-    libusb-1.0 wget libavahi-compat-libdnssd-dev curl
+    wget libavahi-compat-libdnssd-dev curl
 
 RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
     && cd /tmp \
     && wget https://github.com/bitxeno/usbmuxd2/releases/download/v0.0.2/usbmuxd2-ubuntu-${PKG_ARCH}.tar.gz \
     && tar zxf usbmuxd2-ubuntu-${PKG_ARCH}.tar.gz \
-    && dpkg -i ./libgeneral_1.0.0-1_${PKG_ARCH}.deb \
-    && dpkg -i ./libplist_2.3.0-1_${PKG_ARCH}.deb \
-    && dpkg -i ./libimobiledevice-glue_1.0.0-1_${PKG_ARCH}.deb \
-    && dpkg -i ./libusbmuxd_2.3.0-1_${PKG_ARCH}.deb \
-    && dpkg -i ./libimobiledevice_1.3.1-1_${PKG_ARCH}.deb \
-    && dpkg -i ./usbmuxd2_1.0.0-1_${PKG_ARCH}.deb
+    && dpkg -i --force-architecture ./libusb_1.0.26-1_${PKG_ARCH}.deb \
+    && dpkg -i --force-architecture ./libgeneral_1.0.0-1_${PKG_ARCH}.deb \
+    && dpkg -i --force-architecture ./libplist_2.3.0-1_${PKG_ARCH}.deb \
+    && dpkg -i --force-architecture ./libimobiledevice-glue_1.0.0-1_${PKG_ARCH}.deb \
+    && dpkg -i --force-architecture ./libusbmuxd_2.3.0-1_${PKG_ARCH}.deb \
+    && dpkg -i --force-architecture ./libimobiledevice_1.3.1-1_${PKG_ARCH}.deb \
+    && dpkg -i --force-architecture ./usbmuxd2_1.0.0-1_${PKG_ARCH}.deb
 
 # 安装anisette-server，用于模拟本机为MacBook
 RUN if [ "${TARGETARCH}" == "amd64" ]; then PKG_ARCH="x86_64"; else PKG_ARCH="aarch64"; fi \
