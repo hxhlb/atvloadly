@@ -35,7 +35,7 @@ RUN case ${TARGETARCH} in \
     && cd /tmp \
     && wget https://github.com/Dadoum/Provision/releases/download/2.1.0/anisette-server-${PKG_ARCH} \
     && mv anisette-server-${PKG_ARCH} /usr/bin/anisette-server \
-    && chmod +x /usr/bin/anisette-server \
+    && chmod +x /usr/bin/anisette-server
 
 # 安装AltStore
 RUN case ${TARGETARCH} in \
