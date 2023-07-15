@@ -1,14 +1,3 @@
-ARG PKG_ARCH
-
-FROM ubuntu:22.04 AS base
-
-FROM base AS aarch64-base
-ENV PKG_ARCH=aarch64
-
-FROM base AS x86_64-base
-ENV PKG_ARCH=x86_64
-
-FROM ${PKG_ARCH}-base AS final
 ARG APP_NAME
 ARG VERSION
 ARG BUILDDATE
@@ -16,6 +5,16 @@ ARG COMMIT
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
+
+FROM ubuntu:22.04 AS base
+
+FROM base AS arm64-base
+ENV PKG_ARCH=aarch64
+
+FROM base AS amd64-base
+ENV PKG_ARCH=x86_64
+
+FROM ${TARGETARCH}-base AS final
 RUN echo "I'm building for $TARGETPLATFORM"
 
 # 安装依赖
